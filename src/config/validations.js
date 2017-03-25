@@ -12,7 +12,7 @@ module.exports =  {
     phoneNumber: Joi.string().length(10).required(),
     slug: Joi.string().min(1).max(511).regex(/^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/).required(),
     optionalId : Joi.number().integer().min(1).optional(),
-
+    point: Joi.number().required(),
 
     optionalName: Joi.string().min(2).max(120).optional(),
     optionalSurname: Joi.string().min(1).max(120).optional(),

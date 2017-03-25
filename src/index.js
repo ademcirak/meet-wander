@@ -66,6 +66,10 @@ plugins.push({
     register: require('./controllers/UserController')
 });
 
+plugins.push({
+    register: require('./controllers/InterestController')
+});
+
 server.register(plugins, (err) => {
     if (err) {
         server.log(['error'], err);

@@ -68,13 +68,6 @@ module.exports = {
             }, 'stdout']
         }
     },
-    mongooseModel: {
-        globPattern: './src/models/**/*.js', // Required
-        globOptions: {                          // https://github.com/isaacs/node-glob
-            cwd: process.cwd(),                     // Required
-            nosort: true                        // Optional, utils for mongoose descriptors
-        }
-    },
     swagger: {
         info: {
             title: 'API Documentation',

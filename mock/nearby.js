@@ -1,5 +1,7 @@
 const NearBySearch = require("googleplaces");
 const config = require('../src/config/config');
+
+console.log('key:', config.api.google.mapsApiKey);
 var nearBySearch = new NearBySearch(config.api.google.mapsApiKey, "json").nearBySearch;
 
 var parameters = {
@@ -7,6 +9,14 @@ var parameters = {
 };
 
 nearBySearch(parameters, function (error, response) {
-    console.log(error, response);
-    if (error) throw error;
+    if (error){
+        console.log('nearBySearch error:' , error);
+    }else {
+        console.log(response);
+        if(response && response.results && response.results.length > 0){
+            console.log('found: ', response.results.length);
+
+            console.log(JSON.stringify(response.results[0]));
+        }
+    }
 });

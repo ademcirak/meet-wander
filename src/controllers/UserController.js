@@ -4,6 +4,7 @@ const Boom = require('boom');
 const validations = require('../config/validations');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
+var ObjectId = require('mongoose').Types.ObjectId;
 
 exports.register = function (server, options, next) {
 
@@ -11,6 +12,7 @@ exports.register = function (server, options, next) {
 
 
     const User = server.plugins['db'].models.User;
+    const Interest = server.plugins['db'].models.Interest;
 
     const changeAbleUserAttributes = [
         'name',
@@ -100,6 +102,41 @@ exports.register = function (server, options, next) {
             handler: getUser,
             description: 'Get user info by id',
             notes: 'Returns user by id.',
+            tags: ['api', 'user'],
+            validate: {
+                params: {
+                    id : validations.slug.description('user id')
+                }
+            }
+        }
+    });
+
+
+    const getInterests = function(request, reply) {
+
+        let userId = request.params.id;
+
+        Interest.find({
+            user : new ObjectId(userId),
+            status: true
+        }, function(err, interests) {
+            if (!err) {
+                reply(interests);
+            } else {
+                reply(Boom.badImplementation(err)); // 500 error
+            }
+        });
+    };
+
+
+    server.route({
+        method: ['GET'],
+        path: '/user/{id}/interest',
+        config: {
+            auth: false,
+            handler: getInterests,
+            description: 'Get user interests by id',
+            notes: 'Returns user interests by id.',
             tags: ['api', 'user'],
             validate: {
                 params: {
