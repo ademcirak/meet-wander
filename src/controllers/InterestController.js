@@ -304,7 +304,7 @@ exports.register = function (server, options, next) {
                 if (err)
                     return reply(Boom.badImplementation(err));
 
-                reply(result);
+                reply({ results: result });
             })
 
     };
