@@ -304,7 +304,15 @@ exports.register = function (server, options, next) {
                 if (err)
                     return reply(Boom.badImplementation(err));
 
-                reply({ results: result });
+                // remove point from location data
+                // delete not working on mongo response: http://stackoverflow.com/questions/32272937/javascript-delete-object-property-not-working
+                const jsonResult = JSON.parse(JSON.stringify(result));
+
+                jsonResult.forEach(function (item) {
+                    item.location = item.location.coordinates;
+                });
+
+                reply({ results: jsonResult });
             })
 
     };
