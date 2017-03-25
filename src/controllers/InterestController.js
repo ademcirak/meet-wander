@@ -277,7 +277,7 @@ exports.register = function (server, options, next) {
                 { "place.place_id": request.payload.placeId },
                 {
                     endDate: {
-                        $gt: new Date()
+                        $gte: new Date()
                     }
                 },
                 {
