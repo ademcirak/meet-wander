@@ -133,13 +133,26 @@ exports.register = function (server, options, next) {
             };
         }
 
-        Interest.find(query, function(err, interests) {
-            if (!err) {
-                reply(interests);
-            } else {
-                reply(Boom.badImplementation(err)); // 500 error
-            }
-        });
+        Interest
+            .find(query)
+            .sort({'createdAt': -1})
+            .limit(100)
+            .populate('user')
+            .populate('participants')
+            .exec(function(err, result) {
+                if (err)
+                    return reply(Boom.badImplementation(err));
+
+                // remove point from location data
+                // delete not working on mongo response: http://stackoverflow.com/questions/32272937/javascript-delete-object-property-not-working
+                const jsonResult = JSON.parse(JSON.stringify(result));
+
+                jsonResult.forEach(function (item) {
+                    item.location = item.location.coordinates;
+                });
+
+                reply({ results: jsonResult });
+            });
     };
 
 
