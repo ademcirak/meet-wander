@@ -13,6 +13,7 @@ exports.register = function (server, options, next) {
 
     const User = server.plugins['db'].models.User;
     const Interest = server.plugins['db'].models.Interest;
+    const ParticipantRequest = server.plugins['db'].models.ParticipantRequest;
 
     const changeAbleUserAttributes = [
         'name',
@@ -137,6 +138,42 @@ exports.register = function (server, options, next) {
             handler: getInterests,
             description: 'Get user interests by id',
             notes: 'Returns user interests by id.',
+            tags: ['api', 'user'],
+            validate: {
+                params: {
+                    id : validations.slug.description('user id')
+                }
+            }
+        }
+    });
+
+
+    const pendingRequests = function(request, reply) {
+
+
+        ParticipantRequest.find({
+            owner: new ObjectId(request.params.id),
+            status: 'pending'
+        })
+            .populate('user')
+            .populate('interest')
+            .exec(function(err, result) {
+                if (err)
+                    return reply(Boom.badImplementation(err));
+
+                reply(result);
+            })
+
+    };
+
+    server.route({
+        method: ['GET'],
+        path: '/user/{id}/requests',
+        config: {
+            auth: false,
+            handler: pendingRequests,
+            description: 'Returns pending requests',
+            notes: 'Returns pending requests',
             tags: ['api', 'user'],
             validate: {
                 params: {

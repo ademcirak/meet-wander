@@ -12,7 +12,14 @@ var schema = new Mongoose.Schema({
     startDate: { type: Date },
     endDate: { type: Date},
     status: Boolean,
-    createdAt: { type: Date,     required: true, default: Date.now }
+    createdAt: { type: Date, required: true, default: Date.now },
+
+    participants: [
+        {
+            type: Mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ]
 
 });
 

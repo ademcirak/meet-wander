@@ -48,7 +48,7 @@ User.find(function (err, users) {
                             const obj = {
                                 user: user._id,
                                 place: place,
-                                placeId: place.id,
+                                placeId: place.place_id,
                                 location: { type: "Point", coordinates: [ place.geometry.location.lat, place.geometry.location.lng ] },
                                 startDate: startDate,
                                 endDate: endDate,
