@@ -269,15 +269,24 @@ exports.register = function (server, options, next) {
 
 
         Interest.find({
-                "place.place_id": request.payload.placeId,
-                status: true,
-                endDate: {
-                    $lte: endDate
-                },
-                startDate: {
-                    $gte: startDate
+            $and : [
+                { "place.place_id": request.payload.placeId },
+                {
+                    $or: [
+                        {
+                            endDate: {
+                                $lt: endDate
+                            }
+                        },
+                        {
+                            startDate: {
+                                $gt: startDate
+                            }
+                        }
+                    ]
                 }
-            })
+            ]
+        })
             .populate('user')
             .populate('participants')
             .exec(function(err, result) {
