@@ -20,7 +20,7 @@ exports.register = function (server, options, next) {
     const participantStatus = {
         PENDING: 'pending',
         APPROVED: 'approved',
-        DECLINED: 'declineD'
+        DECLINED: 'declined'
     };
 
     var placeDetailsRequest = new googleplaces(config.api.google.mapsApiKey, "json").placeDetailsRequest;

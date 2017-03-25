@@ -1,0 +1,12 @@
+{
+  name: "meet-wander",
+  description: "getir-bitaksi hackathon meet-wander application backend",
+  repository: "https://github.com/ademcirak/meet-wander",
+  keywords: [
+    "node",
+    "hapi",
+    "getir",
+    "bitaksi",
+    "hackathon"
+  ]
+}

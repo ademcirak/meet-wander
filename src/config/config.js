@@ -5,8 +5,8 @@ const os = require('os');
 const Package = require('../../package.json');
 
 const app = {
-    host: process.env.HOST,
-    port: process.env.PORT
+    host: process.env.SERVER_HOST,
+    port: process.env.PORT || process.env.SERVER_PORT || 8080
 };
 
 module.exports = {

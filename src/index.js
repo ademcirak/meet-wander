@@ -10,9 +10,6 @@ server.connection({
     host: config.app.host,
     router: {
         stripTrailingSlash: true
-    },
-    routes: {
-        log: true
     }
 });
 
@@ -77,24 +74,6 @@ server.register(plugins, (err) => {
     }
 
     server.log(['info'], JSON.stringify(config));
-
-    // serve upload
-    server.route({
-        method: 'GET',
-        path: '/upload/{path*}',
-        config: {
-            auth: false,
-            log: false,
-            handler: {
-                directory: {
-                    path: path.join(config.paths.upload),
-                    index: false,
-                    listing: true,
-                    redirectToSlash: false,
-                },
-            },
-        },
-    });
 
     server.route({
         method: '*',
