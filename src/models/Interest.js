@@ -6,6 +6,8 @@ var schema = new Mongoose.Schema({
         type: Mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    title: { type: String },
+    description: { type: String, required: false },
     place: { type: Mongoose.Schema.Types.Mixed },
     placeId: { type: String },
     location: { type: {type:String}, coordinates: [Number]},

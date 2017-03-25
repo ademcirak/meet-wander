@@ -162,6 +162,8 @@ exports.register = function (server, options, next) {
 
             const obj = {
                 user: new ObjectId(request.payload.userId),
+                title: request.payload.title,
+                description: request.payload.description,
                 place: place,
                 placeId: place.place_id,
                 location: { type: "Point", coordinates: [ place.geometry.location.lat, place.geometry.location.lng ] },
@@ -195,6 +197,8 @@ exports.register = function (server, options, next) {
             tags: ['api', 'interest'],
             validate: {
                 payload: {
+                    title: Joi.string().required(),
+                    description: Joi.string().optional(),
                     userId: validations.slug,
                     placeId: validations.slug,
                     startDate: Joi.date().required(),
@@ -272,21 +276,28 @@ exports.register = function (server, options, next) {
             $and : [
                 { "place.place_id": request.payload.placeId },
                 {
-                    $or: [
+                    endDate: {
+                        $gt: new Date()
+                    }
+                },
+                {
+                    $and: [
                         {
                             endDate: {
-                                $lt: endDate
+                                $lte: endDate
                             }
                         },
                         {
                             startDate: {
-                                $gt: startDate
+                                $gte: startDate
                             }
                         }
                     ]
                 }
             ]
         })
+            .sort({'createdAt': -1})
+            .limit(100)
             .populate('user')
             .populate('participants')
             .exec(function(err, result) {
