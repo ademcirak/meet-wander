@@ -117,10 +117,23 @@ exports.register = function (server, options, next) {
 
         let userId = request.params.id;
 
-        Interest.find({
+        let query = {
             user : new ObjectId(userId),
             status: true
-        }, function(err, interests) {
+        };
+
+        if(request.query.type==='past') {
+            query.endDate = {
+                $lte: new Date()
+            };
+        }
+        else if(request.query.type==='future') {
+            query.startDate = {
+                $gt: new Date()
+            };
+        }
+
+        Interest.find(query, function(err, interests) {
             if (!err) {
                 reply(interests);
             } else {
@@ -136,12 +149,15 @@ exports.register = function (server, options, next) {
         config: {
             auth: false,
             handler: getInterests,
-            description: 'Get user interests by id',
-            notes: 'Returns user interests by id.',
+            description: 'Get user interests',
+            notes: 'Returns user interests',
             tags: ['api', 'user'],
             validate: {
                 params: {
                     id : validations.slug.description('user id')
+                },
+                query: {
+                    type: Joi.any().valid(['past', 'future']).optional().description('type')
                 }
             }
         }
