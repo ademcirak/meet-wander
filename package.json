@@ -27,6 +27,7 @@
     "jsonwebtoken": "^7.3.0",
     "moment": "^2.18.1",
     "mongoose": "^4.9.1",
+    "node-opensignal-api": "0.0.3",
     "tv": "^6.1.0",
     "vision": "^4.1.1"
   },

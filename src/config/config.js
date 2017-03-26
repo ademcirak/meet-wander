@@ -33,6 +33,10 @@ module.exports = {
         },
         google: {
             mapsApiKey: process.env.GOOGLE_KEY
+        },
+        oneSignal: {
+            appId: process.env.ONESIGNAL_APP_ID,
+            apiKey: process.env.ONESIGNAL_API_KEY
         }
     },
 

@@ -7,6 +7,27 @@ const mongoose = require('mongoose');
 const ObjectId = require('mongoose').Types.ObjectId;
 const moment = require('moment');
 const googleplaces = require("googleplaces");
+var onesignal = require('node-opensignal-api');
+var onesignal_client = onesignal.createClient();
+
+
+const sendNotificationToUser = function(userId, message) {
+
+    var params = {
+        app_id: config.api.oneSignal.appId,
+        contents: {
+            'en': message
+        },
+        tags: [{ "key": "user", "relation": "=", "value": userId.toString()}]
+    };
+    onesignal_client.notifications.create(config.api.oneSignal.apiKey, params, function (err, response) {
+        if (err) {
+            console.log('Notification send error: ', err);
+        } else {
+            console.log('Notification sent: ', response);
+        }
+    });
+};
 
 
 exports.register = function (server, options, next) {
@@ -73,6 +94,7 @@ exports.register = function (server, options, next) {
                             if (err)
                                 return reply(Boom.internal(err));
 
+                            sendNotificationToUser(result.user, 'Etkinliğe girme isteğiniz onaylandı! İyi gezmeler :)');
                             reply({});
                         });
                     } else {
@@ -117,6 +139,7 @@ exports.register = function (server, options, next) {
             if (err) {
                 return reply(Boom.internal(err));
             } else {
+                sendNotificationToUser(request.payload.ownerId, 'Yeni bir kullanıcı etkinliğinize katılmak istiyor.');
                 return reply(obj);
             }
         });
@@ -367,6 +390,47 @@ exports.register = function (server, options, next) {
         }
     });
 
+
+    const getInterestById = function(request, reply) {
+
+
+        Interest
+            .findOne({
+                _id: new ObjectId(request.params.id)
+            })
+            .populate('user')
+            .populate('participants')
+            .exec(function(err, item) {
+
+                if (err)
+                    return reply(Boom.badImplementation(err));
+
+                // remove point from location data
+                // delete not working on mongo response: http://stackoverflow.com/questions/32272937/javascript-delete-object-property-not-working
+                item = JSON.parse(JSON.stringify(item));
+                item.location = item.location.coordinates;
+
+                reply(item);
+            })
+
+    };
+
+    server.route({
+        method: ['GET'],
+        path: '/interest/{id}',
+        config: {
+            auth: false,
+            handler: getInterestById,
+            description: 'Get event by id',
+            notes: 'Get event by id',
+            tags: ['api', 'interest'],
+            validate: {
+                params: {
+                    id: validations.slug
+                }
+            }
+        }
+    });
 
     server.log(['info'], 'Interest controller loaded');
     next(); //IMPORTANT
