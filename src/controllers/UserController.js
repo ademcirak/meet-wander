@@ -174,13 +174,20 @@ exports.register = function (server, options, next) {
             owner: new ObjectId(request.params.id),
             status: 'pending'
         })
+            .sort({'createdAt': -1})
             .populate('user')
             .populate('interest')
             .exec(function(err, result) {
                 if (err)
                     return reply(Boom.badImplementation(err));
 
-                reply(result);
+                const jsonResult = JSON.parse(JSON.stringify(result));
+
+                jsonResult.forEach(function (item) {
+                    item.interest.location = item.interest.location.coordinates;
+                });
+
+                reply({ results: jsonResult });
             })
 
     };
