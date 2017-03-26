@@ -15,16 +15,6 @@ exports.register = function (server, options, next) {
     const Interest = server.plugins['db'].models.Interest;
     const ParticipantRequest = server.plugins['db'].models.ParticipantRequest;
 
-    const changeAbleUserAttributes = [
-        'name',
-        'surname',
-        'email',
-        'phone_number',
-        'is_private',
-        'bio'
-    ];
-
-
     const getUsers = function(request, reply) {
         server.log(['info'], 'getting all users');
 
