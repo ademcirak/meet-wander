@@ -11,7 +11,7 @@ var onesignal = require('node-opensignal-api');
 var onesignal_client = onesignal.createClient();
 
 
-const sendNotificationToUser = function(userId, message) {
+const sendNotificationToUser = function(userId, message, data) {
 
     var params = {
         app_id: config.api.oneSignal.appId,
@@ -20,6 +20,11 @@ const sendNotificationToUser = function(userId, message) {
         },
         tags: [{ "key": "user", "relation": "=", "value": userId.toString()}]
     };
+
+    if(data)
+    {
+        params.data = data;
+    }
     onesignal_client.notifications.create(config.api.oneSignal.apiKey, params, function (err, response) {
         if (err) {
             console.log('Notification send error: ', err);
@@ -94,7 +99,7 @@ exports.register = function (server, options, next) {
                             if (err)
                                 return reply(Boom.internal(err));
 
-                            sendNotificationToUser(result.user, 'Etkinliğe girme isteğiniz onaylandı! İyi gezmeler :)');
+                            sendNotificationToUser(result.user, 'Etkinliğe girme isteğiniz onaylandı! İyi gezmeler :)', { interestId: result.interest.toString() });
                             reply({});
                         });
                     } else {
@@ -139,7 +144,7 @@ exports.register = function (server, options, next) {
             if (err) {
                 return reply(Boom.internal(err));
             } else {
-                sendNotificationToUser(request.payload.ownerId, 'Yeni bir kullanıcı etkinliğinize katılmak istiyor.');
+                sendNotificationToUser(request.payload.ownerId, 'Yeni bir kullanıcı etkinliğinize katılmak istiyor.', { interestId: request.payload.interestId });
                 return reply(obj);
             }
         });
